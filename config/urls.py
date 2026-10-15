@@ -14,11 +14,9 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='dashboard/index.html'), name='dashboard'),
 
     # Accounts
-    path('accounts/login/', TemplateView.as_view(template_name='accounts/login.html'), name='login'),
-    path('accounts/register/', TemplateView.as_view(template_name='accounts/register.html'), name='register'),
-    path('accounts/password-reset/', TemplateView.as_view(template_name='accounts/password_reset.html'), name='password-reset'),
-    path('accounts/profile/', TemplateView.as_view(template_name='accounts/profile.html'), name='profile'),
-    path('accounts/profile/public/', TemplateView.as_view(template_name='accounts/public_profile.html'), name='public-profile'),
+    path('accounts/', include('apps.accounts.urls')),
+    path('login/', include('django.contrib.auth.urls')),
+    path('password_reset/', include('django.contrib.auth.urls')),
 
     # Organizations
     path('organizations/', TemplateView.as_view(template_name='organizations/list.html'), name='organization-list'),
