@@ -37,6 +37,19 @@ User = get_user_model()
     ('settings-notifications', None),
 ])
 def test_ui_page_renders(client, url_name, kwargs):
+    if url_name.startswith('organization'):
+        user = User.objects.create_user(username='orguser', password='password123!')
+        client.force_login(user)
+        from apps.organizations.models import Organization, Membership
+        
+        # Only create org if URL requires a PK
+        if url_name in ['organization-detail', 'organization-members', 'organization-invitations']:
+            org = Organization.objects.create(name='Test Org', owner=user)
+            Membership.objects.create(organization=org, user=user, role=Membership.Role.OWNER)
+            kwargs = {'pk': org.pk}
+        else:
+            kwargs = None # List and create don't need PK
+
     url = reverse(url_name, kwargs=kwargs) if kwargs else reverse(url_name)
     if url_name in ['accounts:profile', 'settings-security']:
         user = User.objects.create_user(username='testviewer', password='password123!')

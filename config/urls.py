@@ -19,11 +19,8 @@ urlpatterns = [
     path('password_reset/', include('django.contrib.auth.urls')),
 
     # Organizations
-    path('organizations/', TemplateView.as_view(template_name='organizations/list.html'), name='organization-list'),
-    path('organizations/new/', TemplateView.as_view(template_name='organizations/form.html'), name='organization-create'),
-    path('organizations/<int:pk>/', TemplateView.as_view(template_name='organizations/detail.html'), name='organization-detail'),
-    path('organizations/<int:pk>/members/', TemplateView.as_view(template_name='organizations/members.html'), name='organization-members'),
-    path('organizations/<int:pk>/invitations/', TemplateView.as_view(template_name='organizations/invitations.html'), name='organization-invitations'),
+    path('', include('apps.organizations.urls')),
+
 
     # Projects
     path('projects/', TemplateView.as_view(template_name='projects/list.html'), name='project-list'),
