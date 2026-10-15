@@ -1,12 +1,8 @@
-from rest_framework import viewsets, permissions
-from .models import Task, TaskComment
-from .serializers import TaskSerializer, TaskCommentSerializer
-from apps.organizations.models import Membership
-
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import models
+from django.views.generic import ListView
 from .models import Task, TaskComment
 from .serializers import TaskSerializer, TaskCommentSerializer
 from apps.organizations.models import Membership
@@ -45,3 +41,24 @@ class TaskCommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class KanbanView(ListView):
+    model = Task
+    template_name = 'tasks/kanban.html'
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        return Task.objects.filter(project__organization__memberships__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tasks = context['tasks']
+        context['columns'] = [
+            {'name': 'To Do', 'tasks': tasks.filter(status='TODO')},
+            {'name': 'In Progress', 'tasks': tasks.filter(status='IN_PROGRESS')},
+            {'name': 'In Review', 'tasks': tasks.filter(status='IN_REVIEW')},
+            {'name': 'Done', 'tasks': tasks.filter(status='DONE')},
+        ]
+        return context
+
