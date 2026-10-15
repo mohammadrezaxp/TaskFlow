@@ -23,16 +23,10 @@ urlpatterns = [
 
 
     # Projects
-    path('projects/', TemplateView.as_view(template_name='projects/list.html'), name='project-list'),
-    path('projects/new/', TemplateView.as_view(template_name='projects/form.html'), name='project-create'),
-    path('projects/<int:pk>/', TemplateView.as_view(template_name='projects/detail.html'), name='project-detail'),
+    path('', include('apps.projects.urls')),
 
     # Tasks
-    path('tasks/', TemplateView.as_view(template_name='tasks/list.html'), name='task-list'),
-    path('tasks/kanban/', TemplateView.as_view(template_name='tasks/kanban.html'), name='task-kanban'),
-    path('tasks/new/', TemplateView.as_view(template_name='tasks/form.html'), name='task-create'),
-    path('tasks/<int:pk>/', TemplateView.as_view(template_name='tasks/detail.html'), name='task-detail'),
-    path('tasks/<int:pk>/comments/', TemplateView.as_view(template_name='tasks/comments.html'), name='task-comments'),
+    path('', include('apps.tasks.urls')),
 
     # Other Modules
     path('notifications/', TemplateView.as_view(template_name='notifications/list.html'), name='notification-list'),
