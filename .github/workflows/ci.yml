@@ -1,0 +1,31 @@
+name: TaskFlow CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: taskflow
+          POSTGRES_PASSWORD: taskflow
+          POSTGRES_DB: taskflow
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U taskflow"
+          --health-interval=5s --health-timeout=5s --health-retries=10
+    env:
+      SECRET_KEY: ci-only-secret-key-with-enough-characters
+      DATABASE_URL: postgres://taskflow:taskflow@localhost:5432/taskflow
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python manage.py check
+      - run: python manage.py makemigrations --check --dry-run
+      - run: pytest -q
+      - run: python manage.py spectacular --file schema.yml --validate --fail-on-warn
+      - run: docker build -t taskflow:ci .

@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block title %}Join organization — TaskFlow{% endblock %}{% block content %}<section class="card pad form-card"><h1>Join your team</h1><p class="muted">Accept this invitation using the account with the invited email address.</p><form method="post">{% csrf_token %}<button class="btn">Accept invitation</button></form></section>{% endblock %}

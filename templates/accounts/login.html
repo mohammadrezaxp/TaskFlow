@@ -1,1 +1,1 @@
-{% extends 'base.html' %}{% block title %}Sign in — TaskFlow{% endblock %}{% block content %}<div class="heading"><div><h1>Sign in</h1><p class="muted">Welcome back</p></div></div>{% include 'components/messages.html' %}<section class="card pad"><div class="section-title"><h2>Login</h2></div><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn" type="submit">Continue</button></form></section>{% endblock %}
+{% extends 'shared/auth_form.html' %}
