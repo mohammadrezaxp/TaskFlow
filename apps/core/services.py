@@ -21,7 +21,11 @@ ADMINS = ["OWNER", "ADMIN"]
 
 
 def organizations(user):
-    return Organization.objects.filter(memberships__user=user).distinct()
+    # Keep the outer query lockable on PostgreSQL: DISTINCT cannot be combined
+    # with FOR UPDATE. The membership subquery preserves tenant scope without
+    # multiplying organization rows or locking joined membership rows.
+    member_orgs = Membership.objects.filter(user=user).values("organization_id")
+    return Organization.objects.filter(pk__in=member_orgs)
 
 
 def projects(user):
